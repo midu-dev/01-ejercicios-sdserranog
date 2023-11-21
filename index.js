@@ -37,14 +37,15 @@ async function readFileAndCount (word, callback) {
   try {
     await fs.access(filePath)
   } catch (error) {
-    callback(undefined, 0)
+    callback(null, 0)
     return
   }
 
   // If file exists, read it and count the number of times the word appears
   try {
     const text = await fs.readFile(filePath, 'utf-8')
-    const count = text.split(word).length - 1
+    const wordRegex = new RegExp(`\\b${word}\\b`, 'gi')
+    const count = text.match(wordRegex)?.length ?? 0
     callback(null, count)
   } catch (error) {
     callback(error)
